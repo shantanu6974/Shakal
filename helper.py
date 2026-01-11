@@ -1,9 +1,11 @@
 import base64
-import jiosaavn
+# REMOVED: import jiosaavn (This line was causing the crash)
 from pyDes import *
 
-
 def format_song(data, lyrics):
+    # ADDED: Import moved here to prevent crash
+    import jiosaavn 
+    
     try:
         data['media_url'] = decrypt_url(data['encrypted_media_url'])
         if data['320kbps'] != "true":
@@ -11,14 +13,17 @@ def format_song(data, lyrics):
                 "_320.mp4", "_160.mp4")
         data['media_preview_url'] = data['media_url'].replace(
             "_320.mp4", "_96_p.mp4").replace("_160.mp4", "_96_p.mp4").replace("//aac.", "//preview.")
-    except KeyError or TypeError:
-        url = data['media_preview_url']
-        url = url.replace("preview", "aac")
-        if data['320kbps'] == "true":
-            url = url.replace("_96_p.mp4", "_320.mp4")
-        else:
-            url = url.replace("_96_p.mp4", "_160.mp4")
-        data['media_url'] = url
+    except (KeyError, TypeError):
+        try:
+            url = data['media_preview_url']
+            url = url.replace("preview", "aac")
+            if data['320kbps'] == "true":
+                url = url.replace("_96_p.mp4", "_320.mp4")
+            else:
+                url = url.replace("_96_p.mp4", "_160.mp4")
+            data['media_url'] = url
+        except:
+             pass
 
     data['song'] = format(data['song'])
     data['music'] = format(data['music'])
@@ -60,6 +65,8 @@ def format_playlist(data, lyrics):
 
 
 def format(string):
+    if not string:
+        return ""
     return string.encode().decode().replace("&quot;", "'").replace("&amp;", "&").replace("&#039;", "'")
 
 
