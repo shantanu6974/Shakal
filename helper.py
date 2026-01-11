@@ -1,9 +1,9 @@
 import base64
-# REMOVE the 'import jiosaavn' from here!
 from pyDes import *
+# NOTE: 'import jiosaavn' was removed from here to fix the crash.
 
 def format_song(data, lyrics):
-    # ADD 'import jiosaavn' here (inside the function)
+    # FIXED: Import moved here to prevent circular dependency crash
     import jiosaavn
     
     try:
@@ -25,9 +25,6 @@ def format_song(data, lyrics):
         except:
              pass
 
-    # ... (Keep the rest of the file exactly the same) ...
-    # Just make sure the top import is gone and moved inside the function!
-    
     data['song'] = format(data['song'])
     data['music'] = format(data['music'])
     data['singers'] = format(data['singers'])
@@ -48,6 +45,7 @@ def format_song(data, lyrics):
         pass
     return data
 
+
 def format_album(data, lyrics):
     data['image'] = data['image'].replace("150x150", "500x500")
     data['name'] = format(data['name'])
@@ -57,6 +55,7 @@ def format_album(data, lyrics):
         song = format_song(song, lyrics)
     return data
 
+
 def format_playlist(data, lyrics):
     data['firstname'] = format(data['firstname'])
     data['listname'] = format(data['listname'])
@@ -64,9 +63,11 @@ def format_playlist(data, lyrics):
         song = format_song(song, lyrics)
     return data
 
+
 def format(string):
-    if not string: return "" 
+    if not string: return ""
     return string.encode().decode().replace("&quot;", "'").replace("&amp;", "&").replace("&#039;", "'")
+
 
 def decrypt_url(url):
     des_cipher = des(b"38346591", ECB, b"\0\0\0\0\0\0\0\0",
