@@ -5,17 +5,18 @@ import os
 from traceback import print_exc
 from flask_cors import CORS
 
-app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET", 'thankyoutonystark#weloveyou3000')
-CORS(app)
+# FIXED: Changed 'app' to 'application' for AWS Elastic Beanstalk
+application = Flask(__name__)
+application.secret_key = os.environ.get("SECRET", 'thankyoutonystark#weloveyou3000')
+CORS(application)
 
 
-@app.route('/')
+@application.route('/')
 def home():
     return redirect("https://cyberboysumanjay.github.io/JioSaavnAPI/")
 
 
-@app.route('/song/')
+@application.route('/song/')
 def search():
     lyrics = False
     songdata = True
@@ -36,7 +37,7 @@ def search():
         return jsonify(error)
 
 
-@app.route('/song/get/')
+@application.route('/song/get/')
 def get_song():
     lyrics = False
     id = request.args.get('id')
@@ -61,7 +62,7 @@ def get_song():
         return jsonify(error)
 
 
-@app.route('/playlist/')
+@application.route('/playlist/')
 def playlist():
     lyrics = False
     query = request.args.get('query')
@@ -80,7 +81,7 @@ def playlist():
         return jsonify(error)
 
 
-@app.route('/album/')
+@application.route('/album/')
 def album():
     lyrics = False
     query = request.args.get('query')
@@ -99,7 +100,7 @@ def album():
         return jsonify(error)
 
 
-@app.route('/lyrics/')
+@application.route('/lyrics/')
 def lyrics():
     query = request.args.get('query')
 
@@ -129,7 +130,7 @@ def lyrics():
         return jsonify(error)
 
 
-@app.route('/result/')
+@application.route('/result/')
 def result():
     lyrics = False
     query = request.args.get('query')
@@ -169,5 +170,6 @@ def result():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0', port=5100, use_reloader=True, threaded=True)
+    application.debug = True
+    application.run(host='0.0.0.0', port=5100, use_reloader=True, threaded=True)
+    
